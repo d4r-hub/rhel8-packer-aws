@@ -1,0 +1,26 @@
+image: hashicorp/packer:latest
+
+variables:
+  AWS_REGION: "us-east-1"
+  PACKER_TEMPLATE: "packer.pkr.hcl"
+
+stages:
+  - validate
+  - build
+
+validate_packer:
+  stage: validate
+  script:
+    - echo "Validating Packer template..."
+    - packer init $PACKER_TEMPLATE
+    - packer validate $PACKER_TEMPLATE
+
+build_ami:
+  stage: build
+  script:
+    - echo "Building AMI with Packer..."
+    - packer init $PACKER_TEMPLATE
+    - packer build $PACKER_TEMPLATE
+  only:
+    - main
+    - tags
